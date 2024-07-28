@@ -7,3 +7,4 @@ db_password = os.getenv("DB_PASSWORD")
 db_host = os.getenv("DB_HOST", "localhost")
 
 documentation_url = os.getenv("DOCS_URL", None)
+cors_origins = os.getenv("ALLOWED_ORIGINS", "*")
