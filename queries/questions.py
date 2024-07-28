@@ -1,0 +1,1 @@
+get_questions = "SELECT * from hlp.questions;"
