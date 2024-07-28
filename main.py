@@ -36,8 +36,5 @@ def test():
         q["subject"] = question[3]
         q["question"] = question[4]
         q["received_at"] = question[5]
-
         questions_to_return.append(q)
     return {"questions": questions_to_return}
-
-    return {"message": "All is working"}
