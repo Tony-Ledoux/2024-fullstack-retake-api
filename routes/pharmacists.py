@@ -7,5 +7,5 @@ router = APIRouter()
 
 @router.get("/pharmacists")
 def get_pharmacists():
-    result = database.execute_sql_query(q)
+    result = database.execute_sql_query(q.get_active_pharmacists_query)
     return result
