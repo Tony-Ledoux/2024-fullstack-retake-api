@@ -32,7 +32,6 @@ def execute_sql_query(sql_query, query_parameters=None):
         print("Error executing SQL query:", exception)
         result = exception
 
-
     finally:
         if connection.is_connected():
             connection.close()

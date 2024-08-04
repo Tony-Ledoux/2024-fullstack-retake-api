@@ -1,0 +1,1 @@
+get_active_pharmacists_query = "SELECT * from hlp.pharmacists;"
