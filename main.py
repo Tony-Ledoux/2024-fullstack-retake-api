@@ -1,7 +1,4 @@
-import json
-
 import config
-import database
 from routes import questions as qr
 from routes import pharmacists as pr
 from fastapi import FastAPI, HTTPException
@@ -11,6 +8,7 @@ app = FastAPI(docs_url=config.documentation_url)
 origins = config.cors_origins.split(",")
 
 app.add_middleware(CORSMiddleware,
+                   allow_origins=origins,
                    allow_credentials=True,
                    allow_methods=["*"],
                    allow_headers=["*"])
