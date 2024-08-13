@@ -1,6 +1,7 @@
 import config
 from routes import questions as qr
 from routes import pharmacists as pr
+from routes import availability as ar
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -15,4 +16,5 @@ app.add_middleware(CORSMiddleware,
 
 app.include_router(qr.router)
 app.include_router(pr.router)
+app.include_router(ar.router,prefix="/appointment",tags=["appointments"])
 
