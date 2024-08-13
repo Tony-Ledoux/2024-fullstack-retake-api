@@ -27,7 +27,7 @@ def is_date(date: str, date_format: str) -> bool:
         return False
 
 
-def get_date(date: str) -> datetime.date | None:
+def get_date(date: str):
     if is_date(date, "%Y-%m-%d"):
         d = datetime.datetime.strptime(date, "%Y-%m-%d")
         return d.date()
