@@ -6,6 +6,7 @@ pharmacists_per_day = ("SELECT id, pharmacist, JSON_UNQUOTE(JSON_EXTRACT(availib
                        ") AND on_holiday = 0;")
 get_appointments_per_day = "SELECT * FROM hlp.apointments where date_value = %s"
 get_time_slots = "SELECT * FROM hlp.time_slots"
+post_appointment = "INSERT INTO hlp.apointments (`date_value`,`pharmacist_id`,`slot_id`,`customer`) VALUES (%s, %s, %s, %s)"
 get_available_slots ="""
 WITH AvailablePharmacists AS (
     SELECT id, pharmacist, JSON_CONTAINS(availibilty_flag, JSON_QUOTE('%(day)s'), CONCAT('$.availability.morning')) as available_morning, 

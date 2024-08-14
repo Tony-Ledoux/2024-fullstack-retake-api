@@ -2,9 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 import datetime
 import database
 import queries.apointments as queries
+from models import appointments
 import json
 from enum import Enum
 from collections import defaultdict
+
+from models.appointments import Appointment
 
 router = APIRouter()
 
@@ -127,3 +130,17 @@ async def get_availability(date: str):
         return HTTPException(status_code=500, detail=str(e))
     finally:
         con.close()
+
+
+@router.post("/")
+def create_appointment(model: Appointment):
+    q = queries.post_appointment
+    success = database.execute_sql_query(q, (
+        model.date_value,
+        model.pharmacist_id,
+        model.time_slot,
+        model.customer
+    ))
+    if isinstance(success, Exception):
+        return HTTPException(status_code=500, detail="Entry could not be added to database")
+    return {"message": "Successfully added appointment"}
