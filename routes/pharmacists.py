@@ -43,7 +43,7 @@ def get_config_pharmacists():
 def update_pharmacists_config(model: pharmacists.UpdatePharmacist):
     success = database.execute_sql_query(q.update_pharmacists,(
         model.on_holiday,
-        model.available,
+        model.availability,
         model.pharmacist_id
     ))
     print(success)
