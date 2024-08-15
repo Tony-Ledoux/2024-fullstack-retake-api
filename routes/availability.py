@@ -53,49 +53,6 @@ def _is_holiday_database_lookup(holiday: str) -> bool:
     return data
 
 
-def _get_timeslots():
-    timeslots_to_return = []
-    q = queries.get_time_slots
-    result = database.execute_sql_query(q)
-    if isinstance(result, Exception):
-        return []
-    for timeslot in result:
-        timeslot = {"id": timeslot[0], "timeslot": timeslot[1], "day_part": timeslot[2]}
-        timeslots_to_return.append(timeslot)
-    return timeslots_to_return
-
-
-def _get_pharmacists_for_day(weekday: Weekday):
-    q = queries.pharmacists_per_day
-    fq = q % (weekday.name, weekday.name)
-    result = database.execute_sql_query(fq)
-    if isinstance(result, Exception):
-        return []
-    pharmacists_to_return = []
-    for pharmacist in result:
-        data = {
-            "id": pharmacist[0],
-            "name": pharmacist[1],
-            "morning_availability": json.loads(pharmacist[2]),
-            "afternoon_availability": json.loads(pharmacist[3])
-        }
-        pharmacists_to_return.append(data)
-
-    return pharmacists_to_return
-
-
-def _get_made_appointments_for_date(d: datetime.date):
-    q = queries.get_appointments_per_day
-    result = database.execute_sql_query(q, (str(d),))
-    appointments_to_return = []
-    if isinstance(result, Exception):
-        return []
-    for appointment in result:
-        a = {"pharmacist_id": appointment[1], "slot_id": appointment[2], "client": appointment[3]}
-        appointments_to_return.append(a)
-    return appointments_to_return
-
-
 @router.get("/")
 async def get_availability(date: str):
     d = get_date(date)
@@ -132,6 +89,22 @@ async def get_availability(date: str):
         con.close()
 
 
+@router.get("/made")
+async def get_made_appointments(date: str):
+    d = get_date(date)
+    if d is None:
+        raise HTTPException(status_code=400, detail='{"error": "Invalid date format"}')
+    q = queries.get_appointments_from_date
+    result = database.execute_sql_query(q, (date,))
+    if isinstance(result, Exception):
+        raise HTTPException(status_code=500, detail=str(result))
+    data_to_return = []
+    for row in result:
+        data = {"date": row[0], "pharmacist": row[1], "timeslot": row[2], "day_part": row[3],"client":row[4]}
+        data_to_return.append(data)
+    return data_to_return
+
+
 @router.post("/")
 def create_appointment(model: Appointment):
     q = queries.post_appointment
@@ -142,5 +115,5 @@ def create_appointment(model: Appointment):
         model.customer
     ))
     if isinstance(success, Exception):
-        return HTTPException(status_code=500, detail="Entry could not be added to database")
+        raise HTTPException(status_code=500, detail="Entry could not be added to database")
     return {"message": "Successfully added appointment"}
