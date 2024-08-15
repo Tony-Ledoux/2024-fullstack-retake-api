@@ -16,5 +16,4 @@ app.add_middleware(CORSMiddleware,
 
 app.include_router(qr.router)
 app.include_router(pr.router)
-app.include_router(ar.router,prefix="/appointment",tags=["appointments"])
-
+app.include_router(ar.router, prefix="/appointment", tags=["appointments"])

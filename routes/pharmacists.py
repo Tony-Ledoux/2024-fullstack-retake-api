@@ -1,6 +1,6 @@
 import json
 
-from fastapi import APIRouter, Response, HTTPException
+from fastapi import APIRouter, Response, HTTPException, Request
 import database
 import queries.pharmacists as q
 from models import pharmacists
@@ -41,10 +41,11 @@ def get_config_pharmacists():
 
 @router.put("/config/pharmacists")
 def update_pharmacists_config(model: pharmacists.UpdatePharmacist):
-    success = database.execute_sql_query(q.update_pharmacists,(
-        model.on_holiday,
-        model.availability,
-        model.pharmacist_id
-    ))
-    print(success)
-    return model
+    print(model)
+    av = {"availability": {"morning":model.morning, "afternoon": model.afternoon}}
+    query = q.update_pharmacists % (model.on_holiday,json.dumps(av),model.pharmacist_id)
+    print(query)
+    success = database.execute_sql_query(query)
+    if not success:
+        raise HTTPException(status_code=500, detail={"error": "something went wrong"})
+    return {"message": "updated successfully"}
